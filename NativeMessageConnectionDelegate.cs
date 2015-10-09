@@ -22,9 +22,11 @@ namespace MonoMac.HttpClient
 
         public override void ReceivedResponse(NSUrlConnection connection, NSUrlResponse response)
         {
-            Console.WriteLine("received");
-            //throw new System.NotImplementedException ();
-            //waitEvent.Set();
+            var httpResponse = response as NSHttpUrlResponse;
+            if (httpResponse != null)
+            {
+                StatusCode = httpResponse.StatusCode;
+            }
         }
 
         public override void FailedWithError(NSUrlConnection connection, NSError error)
@@ -37,14 +39,15 @@ namespace MonoMac.HttpClient
             waitEvent.Set();
         }
 
-        public override void ReceivedAuthenticationChallenge(NSUrlConnection connection, NSUrlAuthenticationChallenge challenge)
-        {
-            throw new System.NotImplementedException ();
-        }
-
         public void wait()
         {
             waitEvent.Wait();
+        }
+
+        public int StatusCode
+        {
+            get;
+            set;
         }
     }
 }

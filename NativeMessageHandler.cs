@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MonoMac.Foundation;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace MonoMac.HttpClient
 {
@@ -25,9 +26,6 @@ namespace MonoMac.HttpClient
 
             return Task.Run(() =>
                 {
-                    HttpResponseMessage response = new HttpResponseMessage();
-                    response.StatusCode = System.Net.HttpStatusCode.NotFound;
-
                     var headers = request.Headers as IEnumerable<KeyValuePair<string, IEnumerable<string>>>;
 
                     var rq = new NSMutableUrlRequest()
@@ -50,6 +48,11 @@ namespace MonoMac.HttpClient
                     connection.Start();
 
                     connectionDelegate.wait();
+
+                    HttpResponseMessage response = new HttpResponseMessage()
+                        {
+                            StatusCode = (HttpStatusCode)connectionDelegate.StatusCode,
+                        };
 
                     return response;
                 });
