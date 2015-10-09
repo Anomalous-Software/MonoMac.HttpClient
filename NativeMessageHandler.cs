@@ -27,17 +27,25 @@ namespace MonoMac.HttpClient
 
                             NSData data = NSUrlConnection.SendSynchronousRequest(nsRequest, out nsResponse, out nsError);
 
-                            NSHttpUrlResponse nsHttpResponse = nsResponse as NSHttpUrlResponse;
-                            if(nsHttpResponse != null)
+                            if(data != null)
                             {
-                                foreach(var header in nsHttpResponse.AllHeaderFields)
+                                NSHttpUrlResponse nsHttpResponse = nsResponse as NSHttpUrlResponse;
+                                if(nsHttpResponse != null)
                                 {
-                                    if(header.Key != null && header.Value != null)
+                                    response.StatusCode = System.Net.HttpStatusCode.OK;
+                                    foreach(var header in nsHttpResponse.AllHeaderFields)
                                     {
-                                        response.Headers.TryAddWithoutValidation(header.Key.ToString(), header.Value.ToString());
-                                        response.Content.Headers.TryAddWithoutValidation(header.Key.ToString(), header.Value.ToString());
+                                        if(header.Key != null && header.Value != null)
+                                        {
+                                            response.Headers.TryAddWithoutValidation(header.Key.ToString(), header.Value.ToString());
+                                            //response.Content.Headers.TryAddWithoutValidation(header.Key.ToString(), header.Value.ToString());
+                                        }
                                     }
                                 }
+                            }
+                            else
+                            {
+                                
                             }
                         }
                     }
