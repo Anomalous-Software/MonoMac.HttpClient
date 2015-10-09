@@ -37,6 +37,11 @@ namespace MonoMac.HttpClient
             waitEvent.Set();
         }
 
+        public override void ReceivedAuthenticationChallenge(NSUrlConnection connection, NSUrlAuthenticationChallenge challenge)
+        {
+            throw new System.NotImplementedException ();
+        }
+
         public void wait()
         {
             waitEvent.Wait();
