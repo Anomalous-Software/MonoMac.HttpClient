@@ -41,7 +41,7 @@ namespace MonoMac.HttpClient
                         Url = NSUrl.FromString(request.RequestUri.AbsoluteUri),
                     };
 
-                    NativeMessageConnectionDelegate connectionDelegate = new NativeMessageConnectionDelegate(this);
+                    NativeMessageConnectionDelegate connectionDelegate = new NativeMessageConnectionDelegate(request);
                     //var connection = NSUrlConnection.FromRequest(rq, connectionDelegate);
                     var connection = new NSUrlConnection(rq, connectionDelegate, false);
                     connection.Schedule(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);
@@ -49,12 +49,7 @@ namespace MonoMac.HttpClient
 
                     connectionDelegate.wait();
 
-                    HttpResponseMessage response = new HttpResponseMessage()
-                        {
-                            StatusCode = (HttpStatusCode)connectionDelegate.StatusCode,
-                        };
-
-                    return response;
+                    return connectionDelegate.Response;
                 });
 
             return Task.Run(() =>

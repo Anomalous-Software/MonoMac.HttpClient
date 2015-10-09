@@ -41,6 +41,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NativeMessageHandler.cs" />
     <Compile Include="NativeMessageConnectionDelegate.cs" />
+    <Compile Include="ByteArrayListStream.cs" />
+    <Compile Include="AsyncLock.cs" />
+    <Compile Include="ProgressStreamContent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
