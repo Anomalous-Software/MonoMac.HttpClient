@@ -31,6 +31,7 @@ namespace MonoMac.HttpClient
         {
             try
             {
+                responseMessage.RequestMessage.RequestUri = new Uri(response.Url.ToString());
                 var httpResponse = response as NSHttpUrlResponse;
                 if (httpResponse != null)
                 {
@@ -78,11 +79,13 @@ namespace MonoMac.HttpClient
 
         public override void FailedWithError(NSUrlConnection connection, NSError error)
         {
+            stream.Complete();
             waitEvent.Set();
         }
 
         public override void FinishedLoading(NSUrlConnection connection)
         {
+            stream.Complete();
             waitEvent.Set();
         }
 
