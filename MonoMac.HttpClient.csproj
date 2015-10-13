@@ -33,9 +33,6 @@
     <Reference Include="MonoMac">
       <HintPath>..\bin\MonoMac.dll</HintPath>
     </Reference>
-    <Reference Include="MonoMac.CFNetwork">
-      <HintPath>..\bin\MonoMac.CFNetwork.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
