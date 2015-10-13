@@ -52,7 +52,6 @@ namespace MonoMac.HttpClient
                         };
 
                         NativeMessageConnectionDelegate connectionDelegate = new NativeMessageConnectionDelegate(request);
-                        //var connection = NSUrlConnection.FromRequest(rq, connectionDelegate);
                         var connection = new NSUrlConnection(rq, connectionDelegate, false);
                         connection.Schedule(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);
                         connection.Start();

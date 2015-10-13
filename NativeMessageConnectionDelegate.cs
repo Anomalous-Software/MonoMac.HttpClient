@@ -31,7 +31,7 @@ namespace MonoMac.HttpClient
         {
             try
             {
-                responseMessage.RequestMessage.RequestUri = new Uri(response.Url.ToString());
+                responseMessage.RequestMessage.RequestUri = new Uri(response.Url.ToString()); //At least attempt to get the url right if we redirected
                 var httpResponse = response as NSHttpUrlResponse;
                 if (httpResponse != null)
                 {
