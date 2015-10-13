@@ -6,6 +6,7 @@ using MonoMac.Foundation;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.IO;
 
 namespace MonoMac.HttpClient
 {
@@ -27,29 +28,38 @@ namespace MonoMac.HttpClient
             return Task.Run(() =>
                 {
                     var headers = request.Headers as IEnumerable<KeyValuePair<string, IEnumerable<string>>>;
-
-                    var rq = new NSMutableUrlRequest()
+                    using(var ms = new MemoryStream())
                     {
-                        AllowsCellularAccess = true,
-                        CachePolicy = NSUrlRequestCachePolicy.ReloadIgnoringCacheData,
-                        Headers = headers.Aggregate(new NSMutableDictionary(), (acc, x) =>
-                            {
-                                acc.Add(new NSString(x.Key), new NSString(String.Join(getHeaderSeparator(x.Key), x.Value)));
-                                return acc;
-                            }),
-                        HttpMethod = request.Method.ToString().ToUpperInvariant(),
-                        Url = NSUrl.FromString(request.RequestUri.AbsoluteUri),
-                    };
+                        if(request.Content != null)
+                        {
+                            var t = request.Content.CopyToAsync(ms);
+                            t.Wait();
+                            headers = headers.Union(request.Content.Headers);
+                        }
 
-                    NativeMessageConnectionDelegate connectionDelegate = new NativeMessageConnectionDelegate(request);
-                    //var connection = NSUrlConnection.FromRequest(rq, connectionDelegate);
-                    var connection = new NSUrlConnection(rq, connectionDelegate, false);
-                    connection.Schedule(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);
-                    connection.Start();
+                        var rq = new NSMutableUrlRequest()
+                        {
+                            AllowsCellularAccess = true,
+                            CachePolicy = NSUrlRequestCachePolicy.ReloadIgnoringCacheData,
+                            Headers = headers.Aggregate(new NSMutableDictionary(), (acc, x) =>
+                                {
+                                    acc.Add(new NSString(x.Key), new NSString(String.Join(getHeaderSeparator(x.Key), x.Value)));
+                                    return acc;
+                                }),
+                            HttpMethod = request.Method.ToString().ToUpperInvariant(),
+                            Url = NSUrl.FromString(request.RequestUri.AbsoluteUri),
+                        };
 
-                    connectionDelegate.wait();
+                        NativeMessageConnectionDelegate connectionDelegate = new NativeMessageConnectionDelegate(request);
+                        //var connection = NSUrlConnection.FromRequest(rq, connectionDelegate);
+                        var connection = new NSUrlConnection(rq, connectionDelegate, false);
+                        connection.Schedule(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);
+                        connection.Start();
 
-                    return connectionDelegate.Response;
+                        connectionDelegate.wait();
+
+                        return connectionDelegate.Response;
+                    }
                 });
 
             return Task.Run(() =>
