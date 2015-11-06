@@ -79,13 +79,19 @@ namespace MonoMac.HttpClient
 
         public override void FailedWithError(NSUrlConnection connection, NSError error)
         {
-            stream.Complete();
+            if (stream != null)
+            {
+                stream.Complete();
+            }
             waitEvent.Set();
         }
 
         public override void FinishedLoading(NSUrlConnection connection)
         {
-            stream.Complete();
+            if (stream != null)
+            {
+                stream.Complete();
+            }
             waitEvent.Set();
         }
 
