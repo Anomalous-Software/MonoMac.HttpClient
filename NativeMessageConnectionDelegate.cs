@@ -62,18 +62,24 @@ namespace MonoMac.HttpClient
 
         public override void ReceivedData(NSUrlConnection connection, NSData data)
         {
-            using (var dataStream = data.AsStream())
+            try
             {
-                byte[] bytes = new byte[dataStream.Length];
-                int offset = 0;
-                int read = 0;
-                do
+                using (var dataStream = data.AsStream())
                 {
-                    read = dataStream.Read(bytes, offset, bytes.Length - offset);
-                }
-                while(read > 0);
+                    byte[] bytes = new byte[dataStream.Length];
+                    int offset = 0;
+                    int read = 0;
+                    do
+                    {
+                        read = dataStream.Read(bytes, offset, bytes.Length - offset);
+                    }
+                    while(read > 0);
 
-                stream.AddByteArray(bytes);
+                    stream.AddByteArray(bytes);
+                }
+            }
+            catch(Exception) 
+            {
             }
         }
 
